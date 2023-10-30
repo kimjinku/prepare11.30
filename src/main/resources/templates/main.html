@@ -32,6 +32,10 @@
                 </div>
                 <input type="submit" value="수정">
             </form>
+            <form action="/delete" method="get">
+                <input type="hidden" name="id" th:value="${targetPost.id}">
+                <input type="submit" value="삭제">
+            </form>
         </div>
     </div>
 </div>

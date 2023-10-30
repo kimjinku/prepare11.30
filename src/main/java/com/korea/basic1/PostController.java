@@ -3,10 +3,7 @@ package com.korea.basic1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,7 +42,16 @@ public class PostController {
         Post post = postRepository.findById(id).get();
         post.setTitle(title);
         post.setContent(content);
+        if(post.getTitle().equals("")){
+            post.setTitle("제목없음");
+        }
         postRepository.save(post);
         return "redirect:/detail/"+id;
+    }
+    @GetMapping("/delete")
+    public String delete(Long id){
+        Post post = postRepository.findById(id).get();
+        postRepository.delete(post);
+        return "redirect:/";
     }
 }

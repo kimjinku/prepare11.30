@@ -10,18 +10,22 @@ a{
 .wrap{
 }
 .logo{
-background:orange;
+background:aquamarine;
 }
 .wrap-content{
 display:flex;
 }
 .side-menu{
-background:yellow;
+background:indianred;
 width:10%;
 height:800px;
 }
+.side-menu ul li a:active {
+    background-color: blue;
+    padding: 3px;
+}
 .content{
-background:green;
+background:lightseagreen;
 width:90%;
 height:800px;
 }
