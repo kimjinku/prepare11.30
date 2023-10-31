@@ -4,18 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
 @Getter
 @Setter
-public class Post {
+@Entity
+public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
-    private String content;
-    private LocalDateTime createDate;
-    @ManyToOne
-    private Note note;
+    @OneToMany(mappedBy = "note")
+    private List<Post> posts;
+
+
 }

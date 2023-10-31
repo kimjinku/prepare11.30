@@ -7,17 +7,31 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="logo">logo</div>
+    <div class="logo" onclick="goToMainPage()">logo</div>
     <div class="wrap-content">
-        <div class="side-menu">
-            <ul>
-                <li th:each="post:${postList}">
-                    <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}"></a>
-                </li>
-                <form action="/write" method="post">
-                    <input type="submit" value="추가">
-                </form>
-            </ul>
+        <div class="note-List">
+            <div style="overflow: scroll; height: 800px;">
+                <ul>
+                    <li th:each="note:${noteList}">
+                        <a th:href="@{|/noteDetail/${note.id}|}" th:text="${note.title}"></a>
+                    </li>
+                    <form action="/noteWrite" method="post">
+                        <input type="submit" value="노트추가">
+                    </form>
+                </ul>
+        </div>
+        </div>
+        <div class="page-List">
+            <div style="overflow: scroll; height: 800px;">
+                <ul>
+                    <li th:each="post:${postList}" th:class="${post.id==targetPost.id} ? 'selected-item':''">
+                        <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}"></a>
+                    </li>
+                    <form action="/write" method="post">
+                        <input type="submit" value="추가">
+                    </form>
+                </ul>
+            </div>
         </div>
         <div class="content">
             <form action="/update" method="post">
@@ -32,12 +46,19 @@
                 </div>
                 <input type="submit" value="수정">
             </form>
-            <form action="/delete" method="get">
-                <input type="hidden" name="id" th:value="${targetPost.id}">
-                <input type="submit" value="삭제">
-            </form>
+            <div>
+                <form action="/delete" method="get">
+                    <input type="hidden" name="id" th:value="${targetPost.id}">
+                    <input type="submit" value="삭제">
+                </form>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    function goToMainPage() {
+        window.location.href = "/";
+    }
+</script>
 </body>
 </html>
