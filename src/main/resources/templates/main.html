@@ -13,11 +13,17 @@
             <div style="overflow: scroll; height: 800px;">
                 <ul>
                     <li th:each="note:${noteList}">
-                        <a th:href="@{|/noteDetail/${note.noteId}/${targetPost.postId}|}" th:text="${note.title}"></a>
+                        <a th:href="@{|/detail/${note.noteId}/${targetPost.postId}|}" th:text="${note.title}"></a>
                     </li>
                     <form action="/noteWrite" method="post">
                         <input type="submit" value="노트추가">
                     </form>
+                    <div>
+                        <form action="/noteDelete" method="get">
+                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}">
+                            <input type="submit" value="노트삭제">
+                        </form>
+                    </div>
                 </ul>
         </div>
         </div>

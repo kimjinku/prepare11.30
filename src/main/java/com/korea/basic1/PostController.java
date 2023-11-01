@@ -17,19 +17,20 @@ public class PostController {
     PostRepository postRepository;
     @Autowired
     NoteRepository noteRepository;
+
     @RequestMapping("/")
-    public String main(Model model){
+    public String main(Model model,Long noteId) {
         List<Post> postList = postRepository.findAll();
         List<Note> noteList = noteRepository.findAll();
         model.addAttribute("postList",postList);
-        model.addAttribute("targetPost",postList.get(0));
+        model.addAttribute("targetPost", postList.get(0));
         model.addAttribute("noteList", noteList);
-        model.addAttribute("targetNote",noteList.get(0));
+        model.addAttribute("targetNote", noteList.get(0));
         return "main";
     }
 
     @PostMapping("/write")
-    public String write(@RequestParam Long noteId){
+    public String write(@RequestParam Long noteId, Long postId) {
         Post post = new Post();
         Note note = noteRepository.findById(noteId).get();
         post.setTitle("newTitle");
@@ -39,33 +40,39 @@ public class PostController {
         postRepository.save(post);
         return "redirect:/";
     }
+
     @GetMapping("/detail/{noteId}/{postId}")
-    public String detail(Model model, @PathVariable Long postId,@PathVariable Long noteId){
+    public String detail(Model model, @PathVariable Long postId, @PathVariable Long noteId) {
         Post post = postRepository.findById(postId).get();
         Note note = noteRepository.findById(noteId).get();
-        model.addAttribute("targetPost",post);
-        model.addAttribute("postList",postRepository.findAll());
+        List<Post> postListForNote = note.getPosts();
+        model.addAttribute("targetPost", post);
+        model.addAttribute("postList", postListForNote);
         model.addAttribute("noteList", noteRepository.findAll());
-        model.addAttribute("targetNote",note);
+        model.addAttribute("targetNote", note);
+
         return "main";
     }
+
     @PostMapping("/update")
-    public String update(@RequestParam Long postId, String title, String content){
+    public String update(@RequestParam Long postId, String title, String content) {
         Post post = postRepository.findById(postId).get();
         post.setTitle(title);
         post.setContent(content);
-        if(post.getTitle().equals("")){
+        if (post.getTitle().equals("")) {
             post.setTitle("제목없음");
         }
         postRepository.save(post);
         return "redirect:/";
     }
+
     @GetMapping("/delete")
-    public String delete(Long postId){
+    public String delete(Long postId) {
         Post post = postRepository.findById(postId).get();
         postRepository.delete(post);
         return "redirect:/";
     }
+
     @PostMapping("/noteWrite")
     public String noteWrite() {
         Note note = new Note();
@@ -77,15 +84,22 @@ public class PostController {
     }
 
     @GetMapping("/noteDetail/{noteId}/{postId}")
-    public String noteDetail(Model model,@PathVariable Long noteId,@PathVariable Long postId) {
+    public String noteDetail(Model model, @PathVariable Long noteId, @PathVariable Long postId) {
         List<Note> noteList = noteRepository.findAll();
         Post post = postRepository.findById(postId).get();
         Note note = noteRepository.findById(noteId).get();
-        model.addAttribute("targetPost",post);
-        model.addAttribute("postList",postRepository.findAll());
+        List<Post> postListForNote = note.getPosts();
+        model.addAttribute("targetPost", post);
+        model.addAttribute("postList", postListForNote);
         model.addAttribute("noteList", noteList);
-        model.addAttribute("targetNote",note);
+        model.addAttribute("targetNote", note);
         return "main";
     }
 
+    @GetMapping("/noteDelete")
+    public String noteDelete(Long noteId) {
+        Note note = noteRepository.findById(noteId).get();
+        noteRepository.delete(note);
+        return "redirect:/";
+    }
 }
