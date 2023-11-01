@@ -12,10 +12,10 @@ import java.util.List;
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long noteId;
 
     private String title;
-    @OneToMany(mappedBy = "note")
+    @OneToMany(mappedBy = "note", cascade = CascadeType.REMOVE)
     private List<Post> posts;
 
 
