@@ -19,10 +19,11 @@ public class PostController {
     NoteRepository noteRepository;
 
     @RequestMapping("/")
-    public String main(Model model,Long noteId) {
+    public String main(Model model) {
         List<Post> postList = postRepository.findAll();
         List<Note> noteList = noteRepository.findAll();
-        model.addAttribute("postList",postList);
+        List<Post> postListForNote = noteList.get(0).getPosts();
+        model.addAttribute("postList",postListForNote);
         model.addAttribute("targetPost", postList.get(0));
         model.addAttribute("noteList", noteList);
         model.addAttribute("targetNote", noteList.get(0));
@@ -30,7 +31,7 @@ public class PostController {
     }
 
     @PostMapping("/write")
-    public String write(@RequestParam Long noteId, Long postId) {
+    public String write( Long noteId, Long postId) {
         Post post = new Post();
         Note note = noteRepository.findById(noteId).get();
         post.setTitle("newTitle");
@@ -38,7 +39,7 @@ public class PostController {
         post.setCreateDate(LocalDateTime.now());
         post.setNote(note);
         postRepository.save(post);
-        return "redirect:/";
+        return "redirect:detail/"+noteId+"/"+postId;
     }
 
     @GetMapping("/detail/{noteId}/{postId}")
@@ -74,13 +75,13 @@ public class PostController {
     }
 
     @PostMapping("/noteWrite")
-    public String noteWrite() {
+    public String noteWrite(Long noteId,Long postId) {
         Note note = new Note();
         List<Post> postList = new ArrayList<>();
         note.setPosts(postList);
         note.setTitle("새 노트");
         noteRepository.save(note);
-        return "redirect:/";
+        return "redirect:detail/"+noteId+"/"+postId;
     }
 
     @GetMapping("/noteDetail/{noteId}/{postId}")
