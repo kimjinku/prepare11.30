@@ -1,5 +1,6 @@
-package com.korea.basic1;
+package com.korea.basic1.postService;
 
+import com.korea.basic1.note.Note;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,5 @@ public class Post {
     private LocalDateTime createDate;
     @ManyToOne
     private Note note;
+    private String keyword;
 }

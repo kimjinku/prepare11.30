@@ -1,14 +1,14 @@
-package com.korea.basic1;
+package com.korea.basic1.postService;
 
+import com.korea.basic1.note.Note;
+import com.korea.basic1.note.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Controller
@@ -73,34 +73,13 @@ public class PostController {
         postRepository.delete(post);
         return "redirect:/";
     }
-
-    @PostMapping("/noteWrite")
-    public String noteWrite(Long noteId,Long postId) {
-        Note note = new Note();
-        List<Post> postList = new ArrayList<>();
-        note.setPosts(postList);
-        note.setTitle("새 노트");
-        noteRepository.save(note);
-        return "redirect:detail/"+noteId+"/"+postId;
-    }
-
-    @GetMapping("/noteDetail/{noteId}/{postId}")
-    public String noteDetail(Model model, @PathVariable Long noteId, @PathVariable Long postId) {
-        List<Note> noteList = noteRepository.findAll();
-        Post post = postRepository.findById(postId).get();
-        Note note = noteRepository.findById(noteId).get();
-        List<Post> postListForNote = note.getPosts();
-        model.addAttribute("targetPost", post);
-        model.addAttribute("postList", postListForNote);
-        model.addAttribute("noteList", noteList);
-        model.addAttribute("targetNote", note);
-        return "main";
-    }
-
-    @GetMapping("/noteDelete")
-    public String noteDelete(Long noteId) {
-        Note note = noteRepository.findById(noteId).get();
-        noteRepository.delete(note);
-        return "redirect:/";
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
+        List<Post> searchResults = postRepository.findByTitleContainingOrContentContaining(keyword,keyword);
+        model.addAttribute("searchResults", searchResults);
+        return "redirect:/"; // Thymeleaf 템플릿 이름
     }
 }
+
+
+

@@ -1,5 +1,6 @@
-package com.korea.basic1;
+package com.korea.basic1.note;
 
+import com.korea.basic1.postService.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
