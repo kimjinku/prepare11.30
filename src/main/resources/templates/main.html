@@ -17,7 +17,7 @@
             <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
         </li>
         <form th:action="@{/search}" method="get">
-            <input type="text" name="keyword">
+            <input type="text" name="keyword" th:value="${keyword}">
             <button type="submit">검색</button>
         </form>
     </div>
@@ -79,6 +79,13 @@
                     <input type="submit" value="삭제">
                 </form>
             </div>
+        </div>
+        <div class="searchedResult">
+            <ul>
+                <li th:each="post:${searchResults}">
+                    <a th:href="@{|/noteDetail/${targetNote.noteId}/${post.postId}|}" th:text="${post.title}"></a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

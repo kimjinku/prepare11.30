@@ -32,6 +32,11 @@ a{
 }
 .content{
     background:lightseagreen;
-    width:75%;
+    width:65%;
+    height:800px;
+}
+.searchedResult{
+background:limegreen;
+    width:10%;
     height:800px;
 }

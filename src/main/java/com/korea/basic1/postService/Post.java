@@ -19,5 +19,4 @@ public class Post {
     private LocalDateTime createDate;
     @ManyToOne
     private Note note;
-    private String keyword;
 }

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -19,10 +20,18 @@ public class PostController {
     NoteRepository noteRepository;
 
     @RequestMapping("/")
-    public String main(Model model) {
+    public String main(Model model,@RequestParam(value = "keyword", defaultValue = "") String keyword) {
         List<Post> postList = postRepository.findAll();
         List<Note> noteList = noteRepository.findAll();
         List<Post> postListForNote = noteList.get(0).getPosts();
+        if (keyword != null && !keyword.isEmpty()) {
+            List<Post> searchResults = postRepository.findByTitleContainingOrContentContaining(keyword,keyword);
+            model.addAttribute("searchResults", searchResults);
+        } else {
+            model.addAttribute("searchResults", Collections.emptyList()); // 빈 결과를 전달
+        }
+
+        model.addAttribute("keyword",keyword);
         model.addAttribute("postList",postListForNote);
         model.addAttribute("targetPost", postList.get(0));
         model.addAttribute("noteList", noteList);
@@ -43,10 +52,17 @@ public class PostController {
     }
 
     @GetMapping("/detail/{noteId}/{postId}")
-    public String detail(Model model, @PathVariable Long postId, @PathVariable Long noteId) {
+    public String detail(Model model, @PathVariable Long postId, @PathVariable Long noteId,@RequestParam(value = "keyword", defaultValue = "") String keyword) {
         Post post = postRepository.findById(postId).get();
         Note note = noteRepository.findById(noteId).get();
         List<Post> postListForNote = note.getPosts();
+        if (keyword != null && !keyword.isEmpty()) {
+            List<Post> searchResults = postRepository.findByTitleContainingOrContentContaining(keyword,keyword);
+            model.addAttribute("searchResults", searchResults);
+        } else {
+            model.addAttribute("searchResults", Collections.emptyList()); // 빈 결과를 전달
+        }
+        model.addAttribute("keyword",keyword);
         model.addAttribute("targetPost", post);
         model.addAttribute("postList", postListForNote);
         model.addAttribute("noteList", noteRepository.findAll());
@@ -74,11 +90,27 @@ public class PostController {
         return "redirect:/";
     }
     @GetMapping("/search")
-    public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
-        List<Post> searchResults = postRepository.findByTitleContainingOrContentContaining(keyword,keyword);
-        model.addAttribute("searchResults", searchResults);
-        return "redirect:/"; // Thymeleaf 템플릿 이름
+    public String searchPosts(@RequestParam(value = "keyword", defaultValue = "") String keyword, Model model) {
+        List<Post> postList = postRepository.findAll();
+        List<Note> noteList = noteRepository.findAll();
+        if (keyword != null && !keyword.isEmpty()) {
+            List<Post> searchResults = postRepository.findByTitleContainingOrContentContaining(keyword,keyword);
+            model.addAttribute("searchResults", searchResults);
+        } else {
+            model.addAttribute("searchResults", Collections.emptyList()); // 빈 결과를 전달
+        }
+
+        List<Post> postListForNote = noteList.get(0).getPosts();
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("postList", postListForNote);
+        model.addAttribute("targetPost", postList.get(0));
+        model.addAttribute("noteList", noteList);
+        model.addAttribute("targetNote", noteList.get(0));
+
+        return "main";
     }
+
+
 }
 
 
