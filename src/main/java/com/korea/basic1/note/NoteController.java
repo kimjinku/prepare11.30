@@ -32,6 +32,8 @@ public class NoteController {
         } else {
             model.addAttribute("searchResults", Collections.emptyList()); // 빈 결과를 전달
         }
+        List<Note> searchNoteResults = noteRepository.findByPosts_TitleContainingOrPosts_ContentContaining(keyword,keyword);
+        model.addAttribute("searchNoteResults",searchNoteResults);
         model.addAttribute("keyword",keyword);
         model.addAttribute("postList",postListForNote);
         model.addAttribute("targetPost", postList.get(0));
@@ -61,6 +63,8 @@ public class NoteController {
         } else {
             model.addAttribute("searchResults", Collections.emptyList()); // 빈 결과를 전달
         }
+        List<Note> searchNoteResults = noteRepository.findByPosts_TitleContainingOrPosts_ContentContaining(keyword,keyword);
+        model.addAttribute("searchNoteResults",searchNoteResults);
         model.addAttribute("keyword",keyword);
         model.addAttribute("targetPost", post);
         model.addAttribute("postList", postListForNote);

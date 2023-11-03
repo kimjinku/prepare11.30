@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="logo" >
+    <div class="logo">
         <span onclick="goToMainPage()"> logo </span>
         <li class="nav-item">
             <a class="nav-link" th:href="@{/user/signup}">회원가입</a>
@@ -42,7 +42,7 @@
                         </form>
                     </div>
                 </ul>
-        </div>
+            </div>
         </div>
         <div class="page-List">
             <div style="overflow: scroll; height: 800px;">
@@ -82,8 +82,10 @@
         </div>
         <div class="searchedResult">
             <ul>
-                <li th:each="post:${searchResults}">
-                    <a th:href="@{|/noteDetail/${targetNote.noteId}/${post.postId}|}" th:text="${post.title}"></a>
+                <li th:each="note : ${searchNoteResults}">
+                    <span th:each="post : ${searchResults}">
+                         <a th:href="@{|/noteDetail/${note.noteId}/${post.postId}|}" th:text="${post.title}"></a>
+                    </span>
                 </li>
             </ul>
         </div>
