@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.css">
 </head>
 <body>
 <div class="wrap">
@@ -36,9 +37,16 @@
                         <input type="submit" value="노트추가">
                     </form>
                     <div>
-                        <form action="/noteDelete" method="get">
-                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}">
+                        <form action="/noteDelete" method="get" onsubmit="return confirmDelete();">
+                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}" >
                             <input type="submit" value="노트삭제">
+                        </form>
+                    </div>
+                    <div>
+                        <form th:action="@{/noteUpdate}" method="post" onsubmit="return confirmUpdate();">
+                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}">
+                            <input type="text" name="title" th:value="${targetNote.title}">
+                            <input type="submit" value="노트이름수정">
                         </form>
                     </div>
                 </ul>
@@ -68,9 +76,9 @@
                 <div>
                     <input type="text" name="title" th:value="${targetPost.title}">
                 </div>
-                <div>
-                    <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
-                </div>
+                    <!-- <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>-->
+                <!--<div id="editor"></div>-->
+                        <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
                 <input type="submit" value="수정">
             </form>
             <div>
@@ -83,9 +91,9 @@
         <div class="searchedResult">
             <ul>
                 <li th:each="note : ${searchNoteResults}">
-                    <span th:each="post : ${searchResults}">
-                         <a th:href="@{|/noteDetail/${note.noteId}/${post.postId}|}" th:text="${post.title}"></a>
-                    </span>
+            <span th:each="post : ${searchResults}">
+                <a th:href="@{|/noteDetail/${note.noteId}/${post.postId}|}" th:text="${post.title}"></a>
+                </span>
                 </li>
             </ul>
         </div>
@@ -95,6 +103,34 @@
     function goToMainPage() {
         window.location.href = "/";
     }
+</script>
+<script>
+    function confirmDelete() {
+        const selectedNote = document.querySelector('.note-List .selected-item');
+        if (!selectedNote) {
+            alert('삭제할 노트를 선택해주세요.');
+            return false; // 삭제를 중지합니다.
+        }
+        return confirm('정말로 노트를 삭제하시겠습니까?');
+    }
+
+    function confirmUpdate() {
+        const selectedNote = document.querySelector('.note-List .selected-item');
+        if (!selectedNote) {
+            alert('이름 변경할 노트를 선택해주세요.');
+            return false; // 이름 변경을 중지합니다.
+        }
+        return confirm('노트 이름을 변경하시겠습니까?');
+    }
+</script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        height: '300px' // 에디터의 높이를 조절할 수 있습니다.
+    });
 </script>
 </body>
 </html>

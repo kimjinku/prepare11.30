@@ -2,15 +2,23 @@ package com.korea.basic1.postService;
 
 import com.korea.basic1.note.Note;
 import com.korea.basic1.note.NoteRepository;
+import com.korea.basic1.user.SiteUser;
+import com.korea.basic1.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+//질문사항
+//검색기능 오류
+//확인메시지
+// 마크다운이....?
 
 @Controller
 public class PostController {
@@ -18,6 +26,9 @@ public class PostController {
     PostRepository postRepository;
     @Autowired
     NoteRepository noteRepository;
+
+    @Autowired
+    UserService userService;
 
     @RequestMapping("/")
     public String main(Model model,@RequestParam(value = "keyword", defaultValue = "") String keyword) {
@@ -39,15 +50,17 @@ public class PostController {
         model.addAttribute("targetNote", noteList.get(0));
         return "main";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
-    public String write( Long noteId, Long postId) {
+    public String write(Long noteId, Long postId,Principal principal) {
         Post post = new Post();
         Note note = noteRepository.findById(noteId).get();
+        SiteUser siteUser = userService.getUser(principal.getName());
         post.setTitle("newTitle");
         post.setContent("");
         post.setCreateDate(LocalDateTime.now());
         post.setNote(note);
+        post.setAuthor(siteUser);
         postRepository.save(post);
         return "redirect:detail/"+noteId+"/"+postId;
     }
@@ -73,7 +86,7 @@ public class PostController {
 
         return "main";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/update")
     public String update(@RequestParam Long postId, String title, String content) {
         Post post = postRepository.findById(postId).get();
@@ -85,7 +98,7 @@ public class PostController {
         postRepository.save(post);
         return "redirect:/";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete")
     public String delete(Long postId) {
         Post post = postRepository.findById(postId).get();
