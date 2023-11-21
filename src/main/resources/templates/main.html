@@ -20,6 +20,8 @@
         <form th:action="@{/search}" method="get">
             <input type="text" name="keyword" th:value="${keyword}">
             <button type="submit">검색</button>
+            <input type="hidden" name="page" th:value="${currentPage}"> <!-- 페이지 번호 추가 -->
+            <input type="hidden" name="size" value="10"> <!-- 페이지 크기를 10으로 고정 -->
         </form>
     </div>
     <div class="wrap-content">
@@ -38,7 +40,7 @@
                     </form>
                     <div>
                         <form action="/noteDelete" method="get" onsubmit="return confirmDelete();">
-                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}" >
+                            <input type="hidden" name="noteId" th:value="${targetNote.noteId}">
                             <input type="submit" value="노트삭제">
                         </form>
                     </div>
@@ -76,10 +78,12 @@
                 <div>
                     <input type="text" name="title" th:value="${targetPost.title}">
                 </div>
-                    <!-- <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>-->
+                <!-- <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>-->
                 <!--<div id="editor"></div>-->
-                        <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
-                <input type="submit" value="수정">
+                <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
+                <div>
+                    <input type="submit" value="수정">
+                </div>
             </form>
             <div>
                 <form action="/delete" method="get">
@@ -91,9 +95,11 @@
         <div class="searchedResult">
             <ul>
                 <li th:each="note : ${searchNoteResults}">
-            <span th:each="post : ${searchResults}">
-                <a th:href="@{|/noteDetail/${note.noteId}/${post.postId}|}" th:text="${post.title}"></a>
-                </span>
+                    <ul>
+                        <li th:each="post : ${note.posts}">
+                            <a th:href="@{|/noteDetail/${note.noteId}/${post.postId}|}" th:if="${not #strings.isEmpty(keyword)}" th:text="${post.title}"></a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -123,14 +129,6 @@
         return confirm('노트 이름을 변경하시겠습니까?');
     }
 </script>
-<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-<script>
-    const editor = new toastui.Editor({
-        el: document.querySelector('#editor'),
-        initialEditType: 'markdown',
-        previewStyle: 'vertical',
-        height: '300px' // 에디터의 높이를 조절할 수 있습니다.
-    });
-</script>
+
 </body>
 </html>

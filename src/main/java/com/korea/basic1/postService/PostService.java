@@ -4,6 +4,7 @@ import com.korea.basic1.note.Note;
 import com.korea.basic1.note.NoteRepository;
 import com.korea.basic1.note.NoteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
